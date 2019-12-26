@@ -4,6 +4,16 @@ import math
 import time
 
 #functions
+def distance(x1,y1,x2,y2):
+    # returns the z associated to point w, x1,y1 and x2,y2 are projection of w on cameras 1 and 2
+    focal=1
+    baseline=176.252
+    return focal*baseline/(x1+x2)
+
+def mapper(v,t):
+    # maps values [1 100] => [0 255]
+    return  255*(v-min(t))/(max(t)-min(t))
+
 def distanceGrayScale(x1,y1,img1,x2,y2,img2):
     # distance between x1,y in img1 and x2,y2 in img2
     err=0.0
@@ -37,30 +47,53 @@ def bestCorrespondingBlock(x,y,img1,img2):
     for j in range(0,wr):
         d=distanceColor(x,y,img1,j,y,img2)
         # print(str(d)+' '+str(x)+' '+str(j))
-        if d<minim:
+        if d<minim:# and abs(x-j)<20:
             minim=d
             xmin,ymin=j,y
     return xmin,ymin
 
 #data
-l='data/im0.png'
-r='data/im1.png'
-# l='0.png'
-# r='1.png'
+# l='data/ims0.png'
+# r='data/ims1.png'
+l='data/0s.png'
+r='data/1s.png'
 
 #init
 iml = cv2.imread(l)#,cv2.IMREAD_GRAYSCALE)
 imr = cv2.imread(r)#,cv2.IMREAD_GRAYSCALE)
 hl,wl,a=np.shape(iml)
 hr,wr,a=np.shape(imr)
-wWindow,hWindow=16,16
+wWindow,hWindow=6,6
 
 print('________________________________________')
 start_time = time.time()
 d=distanceColor(18,0,iml,0,0,imr)
 print('err='+str(d))
-x,y=bestCorrespondingBlock(0,0,imr,iml)
+x,y=bestCorrespondingBlock(142,83,iml,imr)
 print('bestCorrespondingBlock : x= '+str(x)+', y= '+str(y))
+#
+yy=60
+t=[]
+# for i in range(0,hl):
+for j in range(0,wl):
+    x,y=bestCorrespondingBlock(j,yy,iml,imr)
+    # print('bestCorrespondingBlock : x= '+str(x)+', y= '+str(y))
+    z=distance(j,yy,x,y)
+    t.append(z)
+
+t2=t.copy()
+for i in range(0,wl):
+    t2[i]=mapper(t[i],t)
+
+for i in range(0,wl):
+    print('x= '+str(i)+', z= '+str(t2[i]))
+    iml[yy][i][0]=t2[i]
+    iml[yy][i][1]=t2[i]
+    iml[yy][i][2]=t2[i]
+
+cv2.imwrite('left.png',iml)
+#print(t2)
+#
 print("--- %s seconds ---" % (time.time() - start_time))
 print('________________________________________')
 
