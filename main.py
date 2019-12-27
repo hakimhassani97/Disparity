@@ -95,8 +95,8 @@ def bestCorrespondingBlock(x,y,img1,img2):
 # les images l=left et r=right
 # l='data/0h.png'
 # r='data/1h.png'
-l='data/p0.png'
-r='data/p0.png'
+l='data/lamp0.png'
+r='data/lamp1.png'
 
 #init
 iml = cv2.imread(l)#,cv2.IMREAD_GRAYSCALE)
