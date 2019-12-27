@@ -7,7 +7,8 @@ import random
 #functions
 def distance(x1,y1,x2,y2):
     # returns the z associated to point w, x1,y1 and x2,y2 are projection of w on cameras 1 and 2
-    return x1-x2
+    return abs(x1-x2)
+    # return x1-x2
     # focal=1
     # baseline=10
     # if (x1-x2)==0:
