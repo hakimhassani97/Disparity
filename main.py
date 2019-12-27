@@ -58,12 +58,32 @@ def distanceColor(x1,y1,img1,x2,y2,img2):
                 pass
     return math.sqrt(err)
 
+def lissage(img):
+    # res=img.copy()
+    # h,w,a=np.shape(img)
+    # apply medianBlur
+    # img = cv2.medianBlur(img,5)
+    # apply gaussian blur
+    img = cv2.blur(img,(5,5))
+    # KMEANS
+    Z = img.reshape((-1,3))
+    # convert to np.float32
+    Z = np.float32(Z)
+    # define criteria, number of clusters(K) and apply kmeans()
+    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
+    ret,label,center=cv2.kmeans(Z,K,None,criteria,10,cv2.KMEANS_RANDOM_CENTERS)
+    # Now convert back into uint8, and make original image
+    center = np.uint8(center)
+    res = center[label.flatten()]
+    res2 = res.reshape((img.shape))
+    return res2
+
 def bestCorrespondingBlock(x,y,img1,img2):
     # best corresponding block in img2 for pixel x,y from img1
     minim=99999
     xmin,ymin=x,y
-    d=max(0,x-bestCorrespondingBlockSearchInterval)
-    f=min(wr,x+bestCorrespondingBlockSearchInterval)
+    d=max(0,x-bestCorrespondingBlockSearchIntervalLeft)
+    f=min(wr,x+bestCorrespondingBlockSearchIntervalRight)
     for j in range(d,f,bestCorrespondingBlockSearchStep):
         d=distanceColor(x,y,img1,j,y,img2)
         # print(str(d)+' '+str(x)+' '+str(j))
@@ -72,21 +92,23 @@ def bestCorrespondingBlock(x,y,img1,img2):
             xmin,ymin=j,y
     return xmin,ymin
 
-#data
-# l='data/ims0.png'
-# r='data/ims1.png'
-l='data/lamp0.png'
-r='data/lamp1.png'
+# les images l=left et r=right
+# l='data/0h.png'
+# r='data/1h.png'
+l='data/p0.png'
+r='data/p0.png'
 
 #init
 iml = cv2.imread(l)#,cv2.IMREAD_GRAYSCALE)
 imr = cv2.imread(r)#,cv2.IMREAD_GRAYSCALE)
 hl,wl,a=np.shape(iml)
 hr,wr,a=np.shape(imr)
-wWindow,hWindow=3,3
-bestCorrespondingBlockSearchInterval=30
+wWindow,hWindow=6,6
+bestCorrespondingBlockSearchIntervalLeft=30
+bestCorrespondingBlockSearchIntervalRight=0
 bestCorrespondingBlockSearchStep=5
 imgStep=2
+K=5
 
 print('________________________________________')
 start_time = time.time()
@@ -104,10 +126,7 @@ for i in range(0,hl,imgStep):
         x,y=bestCorrespondingBlock(j,i,iml,imr)
         # print('bestCorrespondingBlock ['+str(j)+','+str(i)+'] => ['+str(x)+','+str(y)+']')
         z=distance(j,i,x,y)
-        if z>=0:
-            ti.append(z)
-        else:
-            ti.append(0)
+        ti.append(z)
         # print('z= '+str(z))
     t.append(ti.copy())
 t2=t.copy()
@@ -125,6 +144,8 @@ for i in range(0,hl//imgStep,1):
         for ii in range(i*imgStep,i*imgStep+imgStep):
             for jj in range(j*imgStep,j*imgStep+imgStep):
                 iml[ii][jj]=[t2[i][j],t2[i][j],t2[i][j]]
+
+iml=lissage(iml)
 
 cv2.imwrite('left.png',iml)
 #print(t2)
