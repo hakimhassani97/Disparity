@@ -42,20 +42,38 @@ def distanceColor(x1,y1,img1,x2,y2,img2):
     for i in range(0,hWindow):
         for j in range(0,wWindow):
             if (y1-i//2>=0 and x1-j//2>=0 and y2-i//2>=0 and x2-j//2>=0) and (y1-i//2<hl and x1-j//2<wl and y2-i//2<hr and x2-j//2<wr):
+    ### sum of absolute value
+    #             err+=(
+    #                     abs(int(img1[y1-i//2,x1-j//2][0])-int(img2[y2-i//2,x2-j//2][0]))+
+    #                     abs(int(img1[y1-i//2,x1-j//2][1])-int(img2[y2-i//2,x2-j//2][1]))+
+    #                     abs(int(img1[y1-i//2,x1-j//2][2])-int(img2[y2-i//2,x2-j//2][2]))
+    #                 )
+    # return err
+    ### end sum of absolute value
+    ### sum square difference
                 err+=(
                         abs(int(img1[y1-i//2,x1-j//2][0])-int(img2[y2-i//2,x2-j//2][0]))+
                         abs(int(img1[y1-i//2,x1-j//2][1])-int(img2[y2-i//2,x2-j//2][1]))+
                         abs(int(img1[y1-i//2,x1-j//2][2])-int(img2[y2-i//2,x2-j//2][2]))
                     )
-                # err+=math.pow(
-                #     math.sqrt(
-                #         (int(img1[y1-i//2,x1-j//2][0])-int(img2[y2-i//2,x2-j//2][0]))**2+
-                #         (int(img1[y1-i//2,x1-j//2][1])-int(img2[y2-i//2,x2-j//2][1]))**2+
-                #         (int(img1[y1-i//2,x1-j//2][2])-int(img2[y2-i//2,x2-j//2][2]))**2
-                #     )
-                # ,2)
-                pass
     return math.sqrt(err)
+    ### end sum square difference
+    ### sum cross-correlation
+    #             err+=(
+    #                     int(img1[y1-i//2,x1-j//2][0])*int(img2[y2-i//2,x2-j//2][0])+
+    #                     int(img1[y1-i//2,x1-j//2][1])*int(img2[y2-i//2,x2-j//2][1])+
+    #                     int(img1[y1-i//2,x1-j//2][2])*int(img2[y2-i//2,x2-j//2][2])
+    #                 )
+    # return err
+    ### end sum cross-correlation
+    ### sum normal-correlation
+    #             err+=(
+    #                     int(img1[y1-i//2,x1-j//2][0])*int(img2[y2-i//2,x2-j//2][0])+
+    #                     int(img1[y1-i//2,x1-j//2][1])*int(img2[y2-i//2,x2-j//2][1])+
+    #                     int(img1[y1-i//2,x1-j//2][2])*int(img2[y2-i//2,x2-j//2][2])
+    #                 )
+    # return err/math.sqrt(err)
+    ### end sum normal-correlation
 
 def lissage(img):
     # smoothes the results to remove useless noise
