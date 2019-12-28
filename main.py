@@ -59,6 +59,7 @@ def distanceColor(x1,y1,img1,x2,y2,img2):
     return math.sqrt(err)
 
 def lissage(img):
+    # smoothes the results to remove useless noise
     # res=img.copy()
     # h,w,a=np.shape(img)
     # apply medianBlur
@@ -98,16 +99,22 @@ def bestCorrespondingBlock(x,y,img1,img2):
 l='data/lamp0.png'
 r='data/lamp1.png'
 
-#init
+#init (here begins the progrm)
 iml = cv2.imread(l)#,cv2.IMREAD_GRAYSCALE)
 imr = cv2.imread(r)#,cv2.IMREAD_GRAYSCALE)
 hl,wl,a=np.shape(iml)
 hr,wr,a=np.shape(imr)
+# window size
 wWindow,hWindow=6,6
+# best corresponding block search interval left and right
+# depends on how much the camera moved in the images
 bestCorrespondingBlockSearchIntervalLeft=30
 bestCorrespondingBlockSearchIntervalRight=0
+# best corresponding block search step
 bestCorrespondingBlockSearchStep=5
-imgStep=2
+# image pixels loop step
+imgStep=4
+# K for kmeans clusterring
 K=5
 
 print('________________________________________')
