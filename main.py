@@ -2,7 +2,6 @@ import cv2
 import numpy as np
 import math
 import time
-import random
 
 #functions
 def distance(x1,y1,x2,y2):
